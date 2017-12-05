@@ -1,4 +1,4 @@
-module EXMEM
+module MEMWB
 (
 	clk_i,
 	mux0_i, mux1_i,
