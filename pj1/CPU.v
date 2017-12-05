@@ -49,25 +49,25 @@ Shift_Left Shift_Left(
 MUX32 Jump_MUX(
     .data1_i    (Branch_MUX.data_o),
     .data2_i    (Shift_Left.inst_o),
-    .select_i   (),
-    .data_o     (PC.pc_i)
+    .select_i   (Control.Jump_o),
+    .data_o     ()
 );
 
 Adder Add_branch(
     .data1_i    (pc_plus4),
     .data2_i    ({extended[29:0], 2'b00}),
-    .data_o     (Branch_MUX.data_o)
+    .data_o     ()
 );
 
 MUX32 Branch_MUX(
     .data1_i    (pc_plus4),
     .data2_i    (Add_branch.data_o),
-    .select_i   (),
-    .data_o     (Jump_MUX.data1_i)
+    .select_i   (Control.Branch_o),
+    .data_o     ()
 );
 
 Instruction_Memory Instruction_Memory(
-    .addr_i     (PC.pc_o), 
+    .addr_i     (inst_addr), 
     .instr_o    (inst)
 );
 
@@ -79,7 +79,7 @@ Registers Registers(
     .RDdata_i   (MUX_MemtoReg.data_o),
     .RegWrite_i (Control.RegWrite_o), 
     .RSdata_o   (), 
-    .RTdata_o   () 
+    .RTdata_o   (RTdata) 
 );
 
 MUX5 MUX_RegDst(
@@ -116,7 +116,7 @@ ALU_Control ALU_Control(
 );
 
 Data_Memory Data_Memory(
-	.clk		(clk),
+	.clk		(clk_i),
 	.addr_i		(ALUres),
 	.w_data_i	(RTdata),
 	.MemRead_i	(Control.MemRead_o),
