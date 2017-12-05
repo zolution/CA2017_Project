@@ -1,7 +1,7 @@
-module Control(Op_i, RegDst_o, ALUSrc_o, MemtoReg_o, RegWrite_o, MemWrite_o, Branch_o, Jump_o, ExtOp_o, ALUOp_o);
+module Control(Op_i, RegDst_o, ALUSrc_o, MemtoReg_o, RegWrite_o, MemWrite_o, Branch_o, Jump_o, ExtOp_o, ALUOp_o, MemRead_o);
 
 input	[5:0]	Op_i;
-output			RegDst_o, ALUSrc_o, RegWrite_o;
+output			RegDst_o, ALUSrc_o, MemtoReg_o, RegWrite_o, MemWrite_o, Branch_o, Jump_o, ExtOp_o, MemRead_o;
 output	[1:0]	ALUOp_o;
 
 // RegDst: 0:I-type, 1:R-type
@@ -29,5 +29,7 @@ assign ALUOp_o = (Op_i == 6'd0) ? 2'd0 :
 
 // always need to write
 assign RegWrite_o = 1'd1;
+
+assign MemRead_o = (Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
 endmodule
