@@ -12,7 +12,7 @@ assign ALUSrc_o = (Op_i == 6'd0 || Op_i == 6'b000100) ? 1'd0 : 1'd1;
 
 assign MemtoReg_o = (Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
-assign RegWrite_o = (Op_i == 6'b000000 || Op_i == 6'b100011) ? 1'd1 : 1'd0;
+assign RegWrite_o = (Op_i == 6'b000000 || Op_i == 6'b100011|| Op_i == 6'b001000) ? 1'd1 : 1'd0;
 
 assign MemWrite_o = (Op_i == 6'b101011) ? 1'd1 : 1'd0;
 
@@ -24,7 +24,7 @@ assign ExtOp_o = 1'd1;
 
 // ALUOp: 0:R-type, 1:add, 2:sub
 assign ALUOp_o = (Op_i == 6'd0) ? 2'd0 :
-				 (Op_i == 6'b100011 || Op_i == 6'b101011) ? 2'd1 : 2'd2;
+				 (Op_i == 6'b100011 || Op_i == 6'b101011 || Op_i == 6'b001000) ? 2'd1 : 2'd2;
 
 
 // always need to write
