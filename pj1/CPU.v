@@ -6,7 +6,7 @@ module CPU
 );
 
 // Ports
-input	wire	clk_i;
+input			clk_i;
 input			rst_i;
 input			start_i;
 
@@ -125,9 +125,9 @@ Data_Memory Data_Memory(
 );
 
 MUX32 MUX_MemtoReg(
-	.data1_i	(DAtaMemory.r_data_o),
+	.data1_i	(Data_Memory.r_data_o),
 	.data2_i	(ALUres),
-	.select_i	(Control.MemtoReg),
+	.select_i	(Control.MemtoReg_o),
 	.data_o		()
 );
 
