@@ -125,8 +125,8 @@ Data_Memory Data_Memory(
 );
 
 MUX32 MUX_MemtoReg(
-	.data1_i	(Data_Memory.r_data_o),
-	.data2_i	(ALUres),
+	.data1_i	(ALUres),
+	.data2_i	(Data_Memory.r_data_o),
 	.select_i	(Control.MemtoReg_o),
 	.data_o		()
 );
