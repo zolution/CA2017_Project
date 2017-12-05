@@ -10,7 +10,7 @@ input	wire	clk_i;
 input			rst_i;
 input			start_i;
 
-wire	[31:0]	inst_addr, inst, ALUres, RTdata;
+wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended;
 
 Control Control(
     .Op_i       (inst[31:26]),
@@ -29,15 +29,41 @@ Control Control(
 Adder Add_PC(
     .data1_i	(inst_addr),
     .data2_i	(32'd4),
-    .data_o		()
+    .data_o		(pc_plus4)
 );
 
 PC PC(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .start_i    (start_i),
-    .pc_i       (Add_PC.data_o),
+    .pc_i       (Jump_MUX.data_o),
     .pc_o       (inst_addr)
+);
+
+Shift_Left Shift_Left(
+    .pc_i       (pc_plus4),
+    .inst_i     (inst[25:0]),
+    .inst_o     ()
+);
+
+MUX32 Jump_MUX(
+    .data1_i    (Branch_MUX.data_o),
+    .data2_i    (Shift_Left.inst_o),
+    .select_i   (),
+    .data_o     (PC.pc_i)
+);
+
+Adder Add_branch(
+    .data1_i    (pc_plus4),
+    .data2_i    ({extended[29:0], 2'b00}),
+    .data_o     (Branch_MUX.data_o)
+);
+
+MUX32 Branch_MUX(
+    .data1_i    (pc_plus4),
+    .data2_i    (Add_branch.data_o),
+    .select_i   (),
+    .data_o     (Jump_MUX.data1_i)
 );
 
 Instruction_Memory Instruction_Memory(
@@ -72,7 +98,7 @@ MUX32 MUX_ALUSrc(
 
 Sign_Extend Sign_Extend(
     .data_i     (inst[15:0]),
-    .data_o     ()
+    .data_o     (extended)
 );
   
 ALU ALU(
