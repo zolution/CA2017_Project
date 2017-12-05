@@ -12,9 +12,9 @@ assign ALUSrc_o = (Op_i == 6'd0 || Op_i == 6'b000100) ? 1'd0 : 1'd1;
 
 assign MemtoReg_o = (Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
-assign RegWrite = (Op_i == 6'b000000 || Op_i == 6'b100011) ? 1'd1 : 1'd0;
+assign RegWrite_o = (Op_i == 6'b000000 || Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
-assign MemWrite = (Op_i == 6'b101011) ? 1'd1 : 1'd0;
+assign MemWrite_o = (Op_i == 6'b101011) ? 1'd1 : 1'd0;
 
 assign Branch_o = (Op_i == 6'b000100) ? 1'd1 : 1'd0;
 
@@ -28,7 +28,7 @@ assign ALUOp_o = (Op_i == 6'd0) ? 2'd0 :
 
 
 // always need to write
-assign RegWrite_o = 1'd1;
+// assign RegWrite_o = 1'd1;
 
 assign MemRead_o = (Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
