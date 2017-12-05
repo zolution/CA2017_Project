@@ -13,7 +13,7 @@ output	[2:0]	ALUCtrl_o;
 // or : 100101
 // mul: 011000
 assign ALUCtrl_o =	(funct_i==6'b100000||ALUOp_i==2'd1) ? 3'd1 :
-					(funct_i==6'b100010) ? 3'd2 :
+					(funct_i==6'b100010||ALUOp_i==2'd2) ? 3'd2 :
 					(funct_i==6'b100100) ? 3'd3 :
 					(funct_i==6'b100101) ? 3'd4 :
 					(funct_i==6'b011000) ? 3'd5 :
