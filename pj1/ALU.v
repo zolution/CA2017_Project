@@ -13,5 +13,6 @@ assign data_o =	(ALUCtrl_i==3'd1) ? data1_i+data2_i :
 					(ALUCtrl_i==3'd4) ? data1_i|data2_i :
 					(ALUCtrl_i==3'd5) ? data1_i*data2_i :
 					0;
+assign Zero_o = (data_o == 32'b0) ? 1 : 0;
 
 endmodule
