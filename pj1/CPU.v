@@ -156,6 +156,8 @@ MUX32 MUX_ALUSrc(
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
+
+MUX32_3 MUX_ALU
   
 ALU ALU(
 	.data1_i    (Registers.RSdata_o),
@@ -194,6 +196,18 @@ EXMEM EXMEM(
     // Writeback path
     .WriteBackPath_i (MUX_RegDst.data_o),
     .WriteBackPath_o ()
+);
+
+// TODO
+Forwarding Forwarding(
+	.EM_RegWrite_i	(EXMEM.RegWrite_o),
+	.EM_RegRD_i		(???),
+	.MW_RegWrite_i	(MEMWB.RegWrite_o),
+	.MW_RegRD_i		(???),
+	.IE_RegRS_i		(???),
+	.IE_RegRT_i		(???),
+	.ForwardA_o		(),
+	.ForwardB_o		()
 );
 
 // MEM stage
