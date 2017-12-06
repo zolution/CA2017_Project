@@ -46,7 +46,8 @@ PC PC(
     .rst_i      (rst_i),
     .start_i    (start_i),
     .pc_i       (Jump_MUX.data_o),
-    .pc_o       (inst_addr)
+    .pc_o       (inst_addr),
+    .Hazard_i   (Hazard_Detect.PC_Write_o)
 );
 
 Shift_Left Shift_Left(
