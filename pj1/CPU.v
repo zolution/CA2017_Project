@@ -105,10 +105,13 @@ IDEX IDEX(
     .data1_i    (Registers.RSdata_o),
     .data2_i    (Registers.RTdata_o),
     .extend_i   (Sign_Extend.data_o),
+    .inst_i     (inst),
     .pc_o       (),
     .data1_o    (),
     .data2_o    (RTdata),
     .extend_o   (extended),
+    .inst_o     (),
+
     // Control input
     .RegDst_i   (Control.RegDst_o),
     .ALUSrc_i   (Control.ALUSrc_o),
@@ -231,25 +234,25 @@ MUX32 MUX_MemtoReg(
 );
 
 HazardDetection Hazard_Detect(
-    .IDEX_MemRead_i     (),
+    .IDEX_MemRead_i     (IDEX.MemRead_o),
     .PC_Write_o         (),
     .IFID_Write_o       (),
     .MUX8_o             (),
-    .IDEX_RegisterRt_i  (),
-    .IFID_RegisterRs_i  (),
-    .IFID_RegisterRt_i  ()
+    .IDEX_RegisterRt_i  (IDEX.inst_o[20:16]),
+    .IFID_RegisterRs_i  (inst[25:21]),
+    .IFID_RegisterRt_i  (inst[20:16])
 );
 
 MUX8 MUX8(
-    .MUX8_i     (),
-    .RegDst_i   (), 
-    .ALUSrc_i   (), 
-    .MemtoReg_i (), 
-    .RegWrite_i (), 
-    .MemWrite_i (), 
-    .ExtOp_i    (), 
-    .ALUOp_i    (), 
-    .MemRead_i  (),
+    .MUX8_i     (Hazard_Detect.MUX8_o),
+    .RegDst_i   (Control.RegDst_o), 
+    .ALUSrc_i   (Control.ALUSrc_o), 
+    .MemtoReg_i (Control.MemtoReg_o), 
+    .RegWrite_i (Control.RegWrite_o), 
+    .MemWrite_i (Control.MemWrite_o), 
+    .ExtOp_i    (Control.ExtOp_o), 
+    .ALUOp_i    (Control.ALUOp_o), 
+    .MemRead_i  (Control.MemRead_o),
     .RegDst_o   (), 
     .ALUSrc_o   (), 
     .MemtoReg_o (), 
