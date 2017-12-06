@@ -131,5 +131,15 @@ MUX32 MUX_MemtoReg(
 	.data_o		()
 );
 
+HazardDetection Hazard_Detect(
+    .IDEX_MemRead_i     (),
+    .PC_Write_o         (),
+    .IFID_Write_o       (),
+    .MUX8_o             (),
+    .IDEX_RegisterRt_i  (),
+    .IFID_RegisterRs_i  (),
+    .IFID_RegisterRt_i  ()
+);
+
 endmodule
 
