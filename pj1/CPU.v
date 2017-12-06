@@ -12,6 +12,9 @@ input			start_i;
 
 wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended;
 
+wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
+wire            Branch_MUX_select = Control.Branch_o & registers_equal;
+
 Control Control(
     .Op_i       (inst[31:26]),
     .RegDst_o   (),
@@ -59,7 +62,7 @@ MUX32 Jump_MUX(
 MUX32 Branch_MUX(
     .data1_i    (pc_plus4),
     .data2_i    (Add_branch.data_o),
-    .select_i   (Control.Branch_o),
+    .select_i   (Branch_MUX_select),
     .data_o     ()
 );
 
