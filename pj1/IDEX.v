@@ -5,13 +5,14 @@ module IDEX
 	pc_o, data1_o, data2_o, extend_o,
 	RegDst_i, ALUSrc_i, MemtoReg_i, RegWrite_i, MemWrite_i, ExtOp_i, ALUOp_i, MemRead_i,
 	RegDst_o, ALUSrc_o, MemtoReg_o, RegWrite_o, MemWrite_o, ExtOp_o, ALUOp_o, MemRead_o,
-	MUX0_i, MUX1_i, MUX0_o, MUX1_o
+	MUX0_i, MUX1_i, MUX0_o, MUX1_o,
+	inst_i, inst_o
 );
 
 input			clk_i;
-input	[31:0]	pc_i, data1_i, data2_i, extend_i;
-output	[31:0]	pc_o, data1_o, data2_o, extend_o;
-reg		[31:0]	pc_o, data1_o, data2_o, extend_o;
+input	[31:0]	pc_i, data1_i, data2_i, extend_i, inst_i;
+output	[31:0]	pc_o, data1_o, data2_o, extend_o, inst_o;
+reg		[31:0]	pc_o, data1_o, data2_o, extend_o, inst_o;
 
 // Control signal
 input			RegDst_i, ALUSrc_i, MemtoReg_i, RegWrite_i, MemWrite_i, ExtOp_i, MemRead_i;
@@ -25,6 +26,7 @@ reg 	[1:0]	ALUOp_o;
 input	[4:0]	MUX0_i, MUX1_i;
 output	[4:0]	MUX0_o, MUX1_o;
 reg		[4:0]	MUX0_o, MUX1_o;
+
 
 
 always@(posedge clk_i) begin
@@ -44,6 +46,7 @@ always@(posedge clk_i) begin
 	// Writeback path
 	MUX0_o <= MUX0_i;
 	MUX1_o <= MUX1_i;
+	inst_o <= inst_i;
 end
 
 endmodule
