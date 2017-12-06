@@ -4,7 +4,7 @@ input	wire	[31:0]	addr_i, w_data_i;
 input	wire			MemRead_i, MemWrite_i, clk;
 output	reg		[31:0]	r_data_o;
 
-reg		[31:0]	memory[7:0];
+reg		[31:0]	memory[31:0];
 
 always @(posedge clk) begin
 	if (MemRead_i == 1'b1)	begin
