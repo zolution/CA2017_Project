@@ -141,5 +141,29 @@ HazardDetection Hazard_Detect(
     .IFID_RegisterRt_i  ()
 );
 
+MUX8 MUX8(
+    .MUX8_i     (),
+    .RegDst_i   (), 
+    .ALUSrc_i   (), 
+    .MemtoReg_i (), 
+    .RegWrite_i (), 
+    .MemWrite_i (), 
+    .Branch_i   (), 
+    .Jump_i     (), 
+    .ExtOp_i    (), 
+    .ALUOp_i    (), 
+    .MemRead_i  (),
+    .RegDst_o   (), 
+    .ALUSrc_o   (), 
+    .MemtoReg_o (), 
+    .RegWrite_o (), 
+    .MemWrite_o (), 
+    .Branch_o   (), 
+    .Jump_o     (), 
+    .ExtOp_o    (), 
+    .ALUOp_o    (), 
+    .MemRead_o  ()
+);
+
 endmodule
 
