@@ -84,7 +84,7 @@ Registers Registers(
     .clk_i      (clk_i),
     .RSaddr_i   (inst[25:21]),
     .RTaddr_i   (inst[20:16]),
-    .RDaddr_i   (MUX_RegDst.data_o), 
+    .RDaddr_i   (MEMWB.WriteBackPath_o), 
     .RDdata_i   (MUX_MemtoReg.data_o),
     .RegWrite_i (MEMWB.RegWrite_o), 
     .RSdata_o   (), 
@@ -127,7 +127,12 @@ IDEX IDEX(
     .Jump_o     (),
     .ExtOp_o    (),
     .ALUOp_o    (),
-    .MemRead_o  ()
+    .MemRead_o  (),
+    // Writeback path
+    .MUX0_i     (inst[20:16]),
+    .MUX1_i     (inst[15:11]),
+    .MUX0_o     (),
+    .MUX1_o     ()
 );
 
 // EX stage
@@ -139,8 +144,8 @@ Adder Add_branch(
 );
 
 MUX5 MUX_RegDst(
-    .data1_i    (inst[20:16]),
-    .data2_i    (inst[15:11]),
+    .data1_i    (IDEX.MUX0_o),
+    .data2_i    (IDEX.MUX1_o),
     .select_i   (IDEX.RegDst_o),
     .data_o     ()
 );
@@ -185,7 +190,10 @@ EXMEM EXMEM(
     .MemRead_o  (),
     .MemWrite_o (),
     .RegWrite_o (),
-    .MemtoReg_o ()
+    .MemtoReg_o (),
+    // Writeback path
+    .WriteBackPath_i (MUX_RegDst.data_o),
+    .WriteBackPath_o ()
 );
 
 // MEM stage
@@ -210,7 +218,10 @@ MEMWB MEMWB(
     .MemtoReg_i (EXMEM.MemtoReg_o),
     // Control output
     .RegWrite_o (),
-    .MemtoReg_o ()
+    .MemtoReg_o (),
+    // Writeback path
+    .WriteBackPath_i (EXMEM.WriteBackPath_o),
+    .WriteBackPath_o ()
 );
 
 // WB stage
