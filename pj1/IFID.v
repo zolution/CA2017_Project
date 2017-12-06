@@ -14,7 +14,8 @@ reg		[31:0]	inst_o, pc_o;
 input			Hazard_i, Flush_i;
 
 always@(posedge clk_i) begin
-    inst_o <= inst_i;
+    inst_o <= ((Flush_i) ? 32'b0 : 
+    		  ((Hazard_i) ? inst_o : inst_i)); //flush or stall or normal
     pc_o <= pc_i;
 end
 
