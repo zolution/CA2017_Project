@@ -26,6 +26,9 @@ Control Control(
 	.MemRead_o	()
 );
 
+
+// PC, Jump, Branch
+
 Adder Add_PC(
     .data1_i	(inst_addr),
     .data2_i	(32'd4),
@@ -66,10 +69,22 @@ MUX32 Branch_MUX(
     .data_o     ()
 );
 
+// IF stage
+
 Instruction_Memory Instruction_Memory(
     .addr_i     (inst_addr), 
     .instr_o    (inst)
 );
+
+IFID IFID(
+    .clk_i      (),
+    .pc_i       (),
+    .inst_i     (),
+    .pc_o       (),
+    .inst_o     ()
+);
+
+// ID stage
 
 Registers Registers(
     .clk_i      (clk_i),
@@ -81,6 +96,47 @@ Registers Registers(
     .RSdata_o   (), 
     .RTdata_o   (RTdata) 
 );
+
+Sign_Extend Sign_Extend(
+    .data_i     (inst[15:0]),
+    .data_o     (extended)
+);
+
+IDEX IDEX(
+    .clk_i      (),
+    .pc_i       (),
+    .data1_i    (),
+    .data2_i    (),
+    .extend_i   (),
+    .pc_o       (),
+    .data1_o    (),
+    .data2_o    (),
+    .extend_o   (),
+    // Control input
+    .RegDst_i   (),
+    .ALUSrc_i   (),
+    .MemtoReg_i (),
+    .RegWrite_i (),
+    .MemWrite_i (),
+    .Branch_i   (),
+    .Jump_i     (),
+    .ExtOp_i    (),
+    .ALUOp_i    (),
+    .MemRead_i  (),
+    // Control output
+    .RegDst_o   (),
+    .ALUSrc_o   (),
+    .MemtoReg_o (),
+    .RegWrite_o (),
+    .MemWrite_o (),
+    .Branch_o   (),
+    .Jump_o     (),
+    .ExtOp_o    (),
+    .ALUOp_o    (),
+    .MemRead_o  ()
+);
+
+// EX stage
 
 MUX5 MUX_RegDst(
     .data1_i    (inst[20:16]),
@@ -94,11 +150,6 @@ MUX32 MUX_ALUSrc(
     .data2_i    (Sign_Extend.data_o),
     .select_i   (Control.ALUSrc_o),
     .data_o     ()
-);
-
-Sign_Extend Sign_Extend(
-    .data_i     (inst[15:0]),
-    .data_o     (extended)
 );
   
 ALU ALU(
@@ -115,6 +166,28 @@ ALU_Control ALU_Control(
     .ALUCtrl_o  ()
 );
 
+EXMEM EXMEM(
+    .clk_i      (),
+    .pc_i       (),
+    .ALUres_i   (),
+    .wrdata_i   (),
+    .pc_o       (),
+    .ALUres_o   (),
+    .wrdata_o   (),
+    .Branch_i   (),
+    .MemRead_i  (),
+    .MemWrite_i (),
+    .RegWrite_i (),
+    .MemtoReg_i (),
+    .Branch_o   (),
+    .MemRead_o  (),
+    .MemWrite_o (),
+    .RegWrite_o (),
+    .MemtoReg_o ()
+);
+
+// MEM stage
+
 Data_Memory Data_Memory(
 	.clk		(clk_i),
 	.addr_i		(ALUres),
@@ -123,6 +196,18 @@ Data_Memory Data_Memory(
 	.MemWrite_i	(Control.MemWrite_o),
 	.r_data_o	()
 );
+
+MEMWB MEMWB(
+    .clk_i      (),
+    .mux0_i     (),     .mux1_i     (),
+    .mux0_o     (),     .mux1_o     (),
+    // Control input
+    .RegWrite_i (),     .MemtoReg_i (),
+    // Control output
+    .RegWrite_o (),     .MemtoReg_o ()
+);
+
+// WB stage
 
 MUX32 MUX_MemtoReg(
 	.data1_i	(ALUres),
