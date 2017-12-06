@@ -78,7 +78,9 @@ IFID IFID(
     .pc_i       (pc_plus4),
     .inst_i     (Instruction_Memory.instr_o),
     .pc_o       (),
-    .inst_o     (inst)
+    .inst_o     (inst),
+    .Hazard_i   (),
+    .Flush_i    ()
 );
 
 // ID stage
