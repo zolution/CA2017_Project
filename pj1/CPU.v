@@ -15,6 +15,9 @@ wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended;
 wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 
+//For Flush
+wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
+
 Control Control(
     .Op_i       (inst[31:26]),
     .RegDst_o   (),
@@ -78,7 +81,9 @@ IFID IFID(
     .pc_i       (pc_plus4),
     .inst_i     (Instruction_Memory.instr_o),
     .pc_o       (),
-    .inst_o     (inst)
+    .inst_o     (inst),
+    .Hazard_i   (Hazard_Detect.IFID_Write_o),
+    .Flush_i    (IFID_needflush)
 );
 
 // ID stage
