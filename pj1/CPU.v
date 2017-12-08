@@ -18,8 +18,8 @@ wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 // For Flush
 wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
 
-// Hazard detection unit
-wire            MemRead;
+// Hazard & Forwarding
+wire            MemRead, RegWrite;
 wire    [4:0]   IDEX_MUX0;
 
 Control Control(
@@ -118,7 +118,7 @@ Registers Registers(
     .RTaddr_i   (inst[20:16]),
     .RDaddr_i   (MEMWB.WriteBackPath_o), 
     .RDdata_i   (WBdata),
-    .RegWrite_i (MEMWB.RegWrite_o), 
+    .RegWrite_i (RegWrite), 
     .RSdata_o   (), 
     .RTdata_o   () 
 );
@@ -144,7 +144,6 @@ IDEX IDEX(
     .data1_i    (Registers.RSdata_o),
     .data2_i    (Registers.RTdata_o),
     .extend_i   (Sign_Extend.data_o),
-    .inst_i     (inst),
     .pc_o       (),
     .data1_o    (),
     .data2_o    (),
@@ -257,7 +256,7 @@ EXMEM EXMEM(
 Forwarding Forwarding(
 	.EM_RegWrite_i	(EXMEM.RegWrite_o),
 	.EM_RegRD_i		(EXMEM.WriteBackPath_o),
-	.MW_RegWrite_i	(MEMWB.RegWrite_o),
+	.MW_RegWrite_i	(RegWrite),
 	.MW_RegRD_i		(MEMWB.WriteBackPath_o),
 	.IE_RegRS_i		(IDEX.inst0_o),
 	.IE_RegRT_i		(IDEX.inst1_o),
@@ -286,7 +285,7 @@ MEMWB MEMWB(
     .RegWrite_i (EXMEM.RegWrite_o),
     .MemtoReg_i (EXMEM.MemtoReg_o),
     // Control output
-    .RegWrite_o (),
+    .RegWrite_o (RegWrite),
     .MemtoReg_o (),
     // Writeback path
     .WriteBackPath_i (EXMEM.WriteBackPath_o),
