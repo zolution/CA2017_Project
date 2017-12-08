@@ -157,7 +157,10 @@ MUX32 MUX_ALUSrc(
     .data_o     ()
 );
 
-MUX32_3 MUX_ALU
+MUX32_3 MUX_ALUFor1(
+	.data1_i	(IDEX.data1_o),
+	.data2_i	()
+)
   
 ALU ALU(
 	.data1_i    (Registers.RSdata_o),
@@ -198,14 +201,13 @@ EXMEM EXMEM(
     .WriteBackPath_o ()
 );
 
-// TODO
 Forwarding Forwarding(
 	.EM_RegWrite_i	(EXMEM.RegWrite_o),
-	.EM_RegRD_i		(???),
+	.EM_RegRD_i		(EXMEM.WriteBackPath_o),
 	.MW_RegWrite_i	(MEMWB.RegWrite_o),
-	.MW_RegRD_i		(???),
-	.IE_RegRS_i		(???),
-	.IE_RegRT_i		(???),
+	.MW_RegRD_i		(MEMWB.WriteBackPath_o),
+	.E_RegRS_i		(IDEX.MUX0_o),
+	.IE_RegRT_i		(IDEX.MUX1_o),
 	.ForwardA_o		(),
 	.ForwardB_o		()
 );
@@ -215,7 +217,7 @@ Forwarding Forwarding(
 Data_Memory Data_Memory(
 	.clk		(clk_i),
 	.addr_i		(ALUres),
-	.w_data_i	(RTdata),
+	.w_data_i	(wrdata_o),
 	.MemRead_i	(Control.MemRead_o),
 	.MemWrite_i	(Control.MemWrite_o),
 	.r_data_o	()
