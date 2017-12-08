@@ -19,8 +19,8 @@ wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
 
 // Hazard & Forwarding
-wire            MemRead, RegWrite_WB, RegWrite_MEM, WritebackPath;
-wire    [4:0]   IDEX_MUX0;
+wire            MemRead, RegWrite_WB, RegWrite_MEM;
+wire    [4:0]   IDEX_MUX0, WritebackPath;
 
 Control Control(
     .Op_i       (inst[31:26]),
@@ -243,7 +243,7 @@ Forwarding Forwarding(
     .EM_RegRD_i		(WritebackPath),
     // Control signal from MEM/WB stage
     .MW_RegWrite_i	(RegWrite_WB),
-    .MW_RegRD_i		(MEMWB.WriteBackPath_o),
+    .MW_RegRD_i		(MEMWB.WriteBackPath_o)
 );
 
 EXMEM EXMEM(
