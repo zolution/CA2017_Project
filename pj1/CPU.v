@@ -20,6 +20,7 @@ wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
 
 // Hazard detection unit
 wire            MemRead;
+wire    [4:0]   IDEX_MUX0;
 
 Control Control(
     .Op_i       (inst[31:26]),
@@ -124,8 +125,7 @@ IDEX IDEX(
     .pc_o       (),
     .data1_o    (),
     .data2_o    (),
-    .extend_o   (),
-    .inst_o     (),
+    .extend_o   (extended),
 
     // Control input
     .RegDst_i   (MUX8.RegDst_o),
@@ -148,14 +148,19 @@ IDEX IDEX(
     // Writeback path
     .MUX0_i     (inst[20:16]),
     .MUX1_i     (inst[15:11]),
-    .MUX0_o     (),
+    .MUX0_o     (IDEX_MUX0),
     .MUX1_o     ()
+    // Forwarding unit
+    .inst0_i     (inst[25:21]),
+    .inst1_i     (inst[20:16]),
+    .inst0_o     (),
+    .inst1_o     ()
 );
 
 // EX stage
 
 MUX5 MUX_RegDst(
-    .data1_i    (IDEX.MUX0_o),
+    .data1_i    (IDEX_MUX0),
     .data2_i    (IDEX.MUX1_o),
     .select_i   (IDEX.RegDst_o),
     .data_o     ()
@@ -226,8 +231,8 @@ Forwarding Forwarding(
 	.EM_RegRD_i		(EXMEM.WriteBackPath_o),
 	.MW_RegWrite_i	(MEMWB.RegWrite_o),
 	.MW_RegRD_i		(MEMWB.WriteBackPath_o),
-	.IE_RegRS_i		(IDEX.MUX0_o),
-	.IE_RegRT_i		(IDEX.MUX1_o),
+	.IE_RegRS_i		(IDEX.inst0_o),
+	.IE_RegRT_i		(IDEX.inst1_o),
 	.ForwardA_o		(),
 	.ForwardB_o		()
 );
@@ -271,7 +276,7 @@ MUX32 MUX5(
 
 HazardDetection Hazard_Detect(
     .IDEX_MemRead_i     (MemRead),
-    .IDEX_RegisterRt_i  (IDEX.inst_o[20:16]),
+    .IDEX_RegisterRt_i  (IDEX_MUX0),
     .IFID_RegisterRs_i  (inst[25:21]),
     .IFID_RegisterRt_i  (inst[20:16]),
     .PC_Write_o         (),
