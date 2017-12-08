@@ -36,6 +36,25 @@ Control Control(
 	.MemRead_o	()
 );
 
+MUX8 MUX8(
+    .MUX8_i     (Hazard_Detect.MUX8_o),
+    .RegDst_i   (Control.RegDst_o), 
+    .ALUSrc_i   (Control.ALUSrc_o), 
+    .MemtoReg_i (Control.MemtoReg_o), 
+    .RegWrite_i (Control.RegWrite_o), 
+    .MemWrite_i (Control.MemWrite_o), 
+    .ExtOp_i    (Control.ExtOp_o), 
+    .ALUOp_i    (Control.ALUOp_o), 
+    .MemRead_i  (Control.MemRead_o),
+    .RegDst_o   (), 
+    .ALUSrc_o   (), 
+    .MemtoReg_o (), 
+    .RegWrite_o (), 
+    .MemWrite_o (), 
+    .ExtOp_o    (), 
+    .ALUOp_o    (), 
+    .MemRead_o  ()
+);
 
 // PC, Jump, Branch
 
@@ -107,6 +126,16 @@ Registers Registers(
 Sign_Extend Sign_Extend(
     .data_i     (inst[15:0]),
     .data_o     ()
+);
+
+HazardDetection Hazard_Detect(
+    .IDEX_MemRead_i     (MemRead),
+    .IDEX_RegisterRt_i  (IDEX_MUX0),
+    .IFID_RegisterRs_i  (inst[25:21]),
+    .IFID_RegisterRt_i  (inst[20:16]),
+    .PC_Write_o         (),
+    .IFID_Write_o       (),
+    .MUX8_o             ()
 );
 
 IDEX IDEX(
@@ -271,36 +300,6 @@ MUX32 MUX5(
 	.data2_i	(MEMWB.mux1_o),
 	.select_i	(MEMWB.MemtoReg_o),
 	.data_o		(WBdata)
-);
-
-HazardDetection Hazard_Detect(
-    .IDEX_MemRead_i     (MemRead),
-    .IDEX_RegisterRt_i  (IDEX_MUX0),
-    .IFID_RegisterRs_i  (inst[25:21]),
-    .IFID_RegisterRt_i  (inst[20:16]),
-    .PC_Write_o         (),
-    .IFID_Write_o       (),
-    .MUX8_o             ()
-);
-
-MUX8 MUX8(
-    .MUX8_i     (Hazard_Detect.MUX8_o),
-    .RegDst_i   (Control.RegDst_o), 
-    .ALUSrc_i   (Control.ALUSrc_o), 
-    .MemtoReg_i (Control.MemtoReg_o), 
-    .RegWrite_i (Control.RegWrite_o), 
-    .MemWrite_i (Control.MemWrite_o), 
-    .ExtOp_i    (Control.ExtOp_o), 
-    .ALUOp_i    (Control.ALUOp_o), 
-    .MemRead_i  (Control.MemRead_o),
-    .RegDst_o   (), 
-    .ALUSrc_o   (), 
-    .MemtoReg_o (), 
-    .RegWrite_o (), 
-    .MemWrite_o (), 
-    .ExtOp_o    (), 
-    .ALUOp_o    (), 
-    .MemRead_o  ()
 );
 
 endmodule
