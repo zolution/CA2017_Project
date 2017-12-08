@@ -3,15 +3,14 @@
 module TestBench;
 
 reg                Clk;
-reg                Reset;
 reg                Start;
 integer            i, outfile, counter;
+integer            stall, flush;
 
 always #(`CYCLE_TIME/2) Clk = ~Clk;    
 
 CPU CPU(
     .clk_i  (Clk),
-    .rst_i  (Reset),
     .start_i(Start)
 );
   
@@ -19,16 +18,18 @@ initial begin
     $dumpfile("prog.vcd");
     $dumpvars;
     counter = 0;
+    stall = 0;
+    flush = 0;
     
     // initialize instruction memory
     for(i=0; i<256; i=i+1) begin
         CPU.Instruction_Memory.memory[i] = 32'b0;
     end
-
+    
+    // initialize data memory
     for(i=0; i<32; i=i+1) begin
         CPU.Data_Memory.memory[i] = 8'b0;
-    end
-    
+    end    
         
     // initialize Register File
     for(i=0; i<32; i=i+1) begin
@@ -41,12 +42,15 @@ initial begin
     // Open output file
     outfile = $fopen("output.txt") | 1;
     
-    Clk = 0;
-    Reset = 0;
+    // Set Input n into data memory at 0x00
+    CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
+    
+    Clk = 1;
+    //Reset = 0;
     Start = 0;
     
     #(`CYCLE_TIME/4) 
-    Reset = 1;
+    //Reset = 1;
     Start = 1;
         
     
@@ -55,9 +59,13 @@ end
 always@(posedge Clk) begin
     if(counter == 30)    // stop after 30 cycles
         $stop;
-        
+
+    // put in your own signal to count stall and flush
+    // if(CPU.HazzardDetection.mux8_o == 1 && CPU.Control.Jump_o == 0 && CPU.Control.Branch_o == 0)stall = stall + 1;
+    // if(CPU.HazzardDetection.Flush_o == 1)flush = flush + 1;  
+
     // print PC
-    $fdisplay(outfile, "PC = %d", CPU.PC.pc_o);
+    $fdisplay(outfile, "cycle = %d, Start = %d, Stall = %d, Flush = %d\nPC = %d", counter, Start, stall, flush, CPU.PC.pc_o);
     
     // print Registers
     $fdisplay(outfile, "Registers");
@@ -78,10 +86,13 @@ always@(posedge Clk) begin
     $fdisplay(outfile, "Data Memory: 0x10 = %d", {CPU.Data_Memory.memory[19], CPU.Data_Memory.memory[18], CPU.Data_Memory.memory[17], CPU.Data_Memory.memory[16]});
     $fdisplay(outfile, "Data Memory: 0x14 = %d", {CPU.Data_Memory.memory[23], CPU.Data_Memory.memory[22], CPU.Data_Memory.memory[21], CPU.Data_Memory.memory[20]});
     $fdisplay(outfile, "Data Memory: 0x18 = %d", {CPU.Data_Memory.memory[27], CPU.Data_Memory.memory[26], CPU.Data_Memory.memory[25], CPU.Data_Memory.memory[24]});
-    $fdisplay(outfile, "Data Memory: 0x1c = %d", {CPU.Data_Memory.memory[31], CPU.Data_Memory.memory[30], CPU.Data_Memory.memory[29], CPU.Data_Memory.memory[28]});    
+    $fdisplay(outfile, "Data Memory: 0x1c = %d", {CPU.Data_Memory.memory[31], CPU.Data_Memory.memory[30], CPU.Data_Memory.memory[29], CPU.Data_Memory.memory[28]});
+	
     $fdisplay(outfile, "\n");
     
     counter = counter + 1;
+    
+      
 end
 
   
