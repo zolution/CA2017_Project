@@ -15,8 +15,11 @@ wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended, WBdata, WRdata;
 wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 
-//For Flush
+// For Flush
 wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
+
+// Hazard detection unit
+wire            MemRead;
 
 Control Control(
     .Op_i       (inst[31:26]),
@@ -119,14 +122,14 @@ IDEX IDEX(
     .inst_o     (),
 
     // Control input
-    .RegDst_i   (Control.RegDst_o),
-    .ALUSrc_i   (Control.ALUSrc_o),
-    .MemtoReg_i (Control.MemtoReg_o),
-    .RegWrite_i (Control.RegWrite_o),
-    .MemWrite_i (Control.MemWrite_o),
-    .ExtOp_i    (Control.ExtOp_o),
-    .ALUOp_i    (Control.ALUOp_o),
-    .MemRead_i  (Control.MemRead_o),
+    .RegDst_i   (MUX8.RegDst_o),
+    .ALUSrc_i   (MUX8.ALUSrc_o),
+    .MemtoReg_i (MUX8.MemtoReg_o),
+    .RegWrite_i (MUX8.RegWrite_o),
+    .MemWrite_i (MUX8.MemWrite_o),
+    .ExtOp_i    (MUX8.ExtOp_o),
+    .ALUOp_i    (MUX8.ALUOp_o),
+    .MemRead_i  (MUX8.MemRead_o),
     // Control output
     .RegDst_o   (),
     .ALUSrc_o   (),
@@ -135,7 +138,7 @@ IDEX IDEX(
     .MemWrite_o (),
     .ExtOp_o    (),
     .ALUOp_o    (),
-    .MemRead_o  (),
+    .MemRead_o  (MemRead),
     // Writeback path
     .MUX0_i     (inst[20:16]),
     .MUX1_i     (inst[15:11]),
@@ -204,7 +207,7 @@ EXMEM EXMEM(
     .ALUres_o   (ALUres),
     .wrdata_o   (),
     // Control input
-    .MemRead_i  (IDEX.MemRead_o),
+    .MemRead_i  (MemRead),
     .MemWrite_i (IDEX.MemWrite_o),
     .RegWrite_i (IDEX.RegWrite_o),
     .MemtoReg_i (IDEX.MemtoReg_o),
@@ -267,13 +270,13 @@ MUX32 MUX5(
 );
 
 HazardDetection Hazard_Detect(
-    .IDEX_MemRead_i     (IDEX.MemRead_o),
-    .PC_Write_o         (),
-    .IFID_Write_o       (),
-    .MUX8_o             (),
+    .IDEX_MemRead_i     (MemRead),
     .IDEX_RegisterRt_i  (IDEX.inst_o[20:16]),
     .IFID_RegisterRs_i  (inst[25:21]),
-    .IFID_RegisterRt_i  (inst[20:16])
+    .IFID_RegisterRt_i  (inst[20:16]),
+    .PC_Write_o         (),
+    .IFID_Write_o       (),
+    .MUX8_o             ()
 );
 
 MUX8 MUX8(
