@@ -105,6 +105,12 @@ Sign_Extend Sign_Extend(
     .data_o     ()
 );
 
+Adder Add_branch(
+    .data1_i    (IDEX.pc_o),
+    .data2_i    ({Sign_Extend.data_o[29:0], 2'b00}),
+    .data_o     ()
+);
+
 IDEX IDEX(
     .clk_i      (clk_i),
     .pc_i       (IFID.pc_o),
@@ -115,7 +121,7 @@ IDEX IDEX(
     .pc_o       (),
     .data1_o    (),
     .data2_o    (),
-    .extend_o   (extended),
+    .extend_o   (),
     .inst_o     (),
 
     // Control input
@@ -145,12 +151,6 @@ IDEX IDEX(
 
 // EX stage
 
-Adder Add_branch(
-    .data1_i    (IDEX.pc_o),
-    .data2_i    ({extended[29:0], 2'b00}),
-    .data_o     ()
-);
-
 MUX5 MUX_RegDst(
     .data1_i    (IDEX.MUX0_o),
     .data2_i    (IDEX.MUX1_o),
@@ -160,7 +160,7 @@ MUX5 MUX_RegDst(
 
 MUX32 MUX_ALUSrc(
     .data1_i    (WRdata),
-    .data2_i    (Sign_Extend.data_o),
+    .data2_i    (IDEX.extend_o),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
@@ -182,7 +182,7 @@ MUX32_3 MUX7(
 );
   
 ALU ALU(
-	.data1_i    (Registers.RSdata_o),
+	.data1_i    (MUX6.data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     (),
@@ -190,7 +190,7 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    (inst[5:0]),
+    .funct_i    (IDEX.inst_o[5:0]),
     .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
 );
