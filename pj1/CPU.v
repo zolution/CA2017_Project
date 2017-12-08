@@ -233,6 +233,19 @@ ALU_Control ALU_Control(
     .ALUCtrl_o  ()
 );
 
+Forwarding Forwarding(
+    .IE_RegRS_i     (IDEX.inst0_o),
+    .IE_RegRT_i     (IDEX.inst1_o),
+    .ForwardA_o     (),
+    .ForwardB_o     (),
+    // Control signal from EX/MEM stage
+    .EM_RegWrite_i	(RegWrite_MEM),
+    .EM_RegRD_i		(WritebackPath),
+    // Control signal from MEM/WB stage
+    .MW_RegWrite_i	(RegWrite_WB),
+    .MW_RegRD_i		(MEMWB.WriteBackPath_o),
+);
+
 EXMEM EXMEM(
     .clk_i      (clk_i),
     .pc_i       (Add_branch.data_o),
@@ -256,27 +269,14 @@ EXMEM EXMEM(
     .WriteBackPath_o (WritebackPath)
 );
 
-Forwarding Forwarding(
-    .IE_RegRS_i     (IDEX.inst0_o),
-    .IE_RegRT_i     (IDEX.inst1_o),
-    .ForwardA_o     (),
-    .ForwardB_o     (),
-    // Control signal from EX/MEM stage
-    .EM_RegWrite_i	(RegWrite_MEM),
-    .EM_RegRD_i		(WritebackPath),
-    // Control signal from MEM/WB stage
-    .MW_RegWrite_i	(RegWrite_WB),
-    .MW_RegRD_i		(MEMWB.WriteBackPath_o),
-);
-
 // MEM stage
 
 Data_Memory Data_Memory(
 	.clk		(clk_i),
 	.addr_i		(ALUres),
 	.w_data_i	(EXMEM.wrdata_o),
-	.MemRead_i	(Control.MemRead_o),
-	.MemWrite_i	(Control.MemWrite_o),
+	.MemRead_i	(EXMEM.MemRead_o),
+	.MemWrite_i	(EXMEM.MemWrite_o),
 	.r_data_o	()
 );
 
