@@ -97,13 +97,13 @@ MUX32 Branch_MUX(
 
 Instruction_Memory Instruction_Memory(
     .addr_i     (inst_addr), 
-    .instr_o    ()
+    .inst_o     ()
 );
 
 IFID IFID(
     .clk_i      (clk_i),
     .pc_i       (pc_plus4),
-    .inst_i     (Instruction_Memory.instr_o),
+    .inst_i     (Instruction_Memory.inst_o),
     .pc_o       (),
     .inst_o     (inst),
     .Hazard_i   (Hazard_Detect.IFID_Write_o),
@@ -129,7 +129,7 @@ Sign_Extend Sign_Extend(
 );
 
 Adder Add_branch(
-    .data1_i    (IDEX.pc_o),
+    .data1_i    (IFID.pc_o),
     .data2_i    ({extended[29:0], 2'b00}),
     .data_o     ()
 );
@@ -143,7 +143,6 @@ HazardDetection Hazard_Detect(
     .IFID_Write_o       (),
     .MUX8_o             ()
 );
-
 
 IDEX IDEX(
     .clk_i      (clk_i),
