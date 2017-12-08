@@ -10,7 +10,7 @@ input			clk_i;
 input			rst_i;
 input			start_i;
 
-wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended, funct, WBdata, WRdata;
+wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, pc_next, extended, funct, WBdata, WRdata;
 
 wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
@@ -74,23 +74,23 @@ PC PC(
 );
 
 Shift_Left Shift_Left(
-    .pc_i       (pc_plus4),
+    .pc_i       (pc_next),
     .inst_i     (inst[25:0]),
     .inst_o     ()
 );
 
 MUX32 Jump_MUX(
-    .data1_i    (Branch_MUX.data_o),
+    .data1_i    (pc_next),
     .data2_i    (Shift_Left.inst_o),
     .select_i   (Control.Jump_o),
     .data_o     ()
 );
 
 MUX32 Branch_MUX(
-    .data1_i    (pc_plus4),
-    .data2_i    (Add_branch.data_o),
+    .data1_i    (Add_branch.data_o),
+    .data2_i    (pc_plus4),
     .select_i   (Branch_MUX_select),
-    .data_o     ()
+    .data_o     (pc_next)
 );
 
 // IF stage
