@@ -128,6 +128,12 @@ Sign_Extend Sign_Extend(
     .data_o     ()
 );
 
+Adder Add_branch(
+    .data1_i    (IDEX.pc_o),
+    .data2_i    ({Sign_Extend.data_o[29:0], 2'b00}),
+    .data_o     ()
+);
+
 HazardDetection Hazard_Detect(
     .IDEX_MemRead_i     (MemRead),
     .IDEX_RegisterRt_i  (IDEX_MUX0),
@@ -137,6 +143,7 @@ HazardDetection Hazard_Detect(
     .IFID_Write_o       (),
     .MUX8_o             ()
 );
+
 
 IDEX IDEX(
     .clk_i      (clk_i),
@@ -148,6 +155,7 @@ IDEX IDEX(
     .data1_o    (),
     .data2_o    (),
     .extend_o   (extended),
+
     // Control input
     .RegDst_i   (MUX8.RegDst_o),
     .ALUSrc_i   (MUX8.ALUSrc_o),
@@ -170,7 +178,8 @@ IDEX IDEX(
     .MUX0_i     (inst[20:16]),
     .MUX1_i     (inst[15:11]),
     .MUX0_o     (IDEX_MUX0),
-    .MUX1_o     ()
+    .MUX1_o     (),
+
     // Forwarding unit
     .inst0_i     (inst[25:21]),
     .inst1_i     (inst[20:16]),
@@ -179,12 +188,6 @@ IDEX IDEX(
 );
 
 // EX stage
-
-Adder Add_branch(
-    .data1_i    (IDEX.pc_o),
-    .data2_i    ({extended[29:0], 2'b00}),
-    .data_o     ()
-);
 
 MUX5 MUX_RegDst(
     .data1_i    (IDEX_MUX0),
@@ -195,7 +198,7 @@ MUX5 MUX_RegDst(
 
 MUX32 MUX_ALUSrc(
     .data1_i    (WRdata),
-    .data2_i    (Sign_Extend.data_o),
+    .data2_i    (IDEX.extend_o),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
@@ -217,7 +220,7 @@ MUX32_3 MUX7(
 );
   
 ALU ALU(
-	.data1_i    (Registers.RSdata_o),
+	.data1_i    (MUX6.data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     (),
@@ -225,7 +228,7 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    (inst[5:0]),
+    .funct_i    (extended[5:0]),
     .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
 );
