@@ -1,3 +1,4 @@
+// TODO: remove pc 
 module EXMEM
 (
 	clk_i,

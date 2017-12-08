@@ -147,7 +147,7 @@ HazardDetection Hazard_Detect(
 
 IDEX IDEX(
     .clk_i      (clk_i),
-    .pc_i       (IFID.pc_o),
+    .pc_i       (),
     .data1_i    (Registers.RSdata_o),
     .data2_i    (Registers.RTdata_o),
     .extend_i   (Sign_Extend.data_o),
@@ -246,9 +246,10 @@ Forwarding Forwarding(
     .MW_RegRD_i		(MEMWB.WriteBackPath_o)
 );
 
+// TODO remove PC
 EXMEM EXMEM(
     .clk_i      (clk_i),
-    .pc_i       (Add_branch.data_o),
+    .pc_i       (),
     .ALUres_i   (ALU.data_o),
     .wrdata_i   (WRdata),
     .pc_o       (),
