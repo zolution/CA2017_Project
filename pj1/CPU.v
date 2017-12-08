@@ -10,7 +10,7 @@ input			clk_i;
 input			rst_i;
 input			start_i;
 
-wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended;
+wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended, WBdata, WRdata;
 
 wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
@@ -94,7 +94,7 @@ Registers Registers(
     .RSaddr_i   (inst[25:21]),
     .RTaddr_i   (inst[20:16]),
     .RDaddr_i   (MEMWB.WriteBackPath_o), 
-    .RDdata_i   (MUX_MemtoReg.data_o),
+    .RDdata_i   (WBdata),
     .RegWrite_i (MEMWB.RegWrite_o), 
     .RSdata_o   (), 
     .RTdata_o   () 
@@ -114,7 +114,7 @@ IDEX IDEX(
     .inst_i     (inst),
     .pc_o       (),
     .data1_o    (),
-    .data2_o    (RTdata),
+    .data2_o    (),
     .extend_o   (extended),
     .inst_o     (),
 
@@ -159,10 +159,26 @@ MUX5 MUX_RegDst(
 );
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (RTdata),
+    .data1_i    (WRdata),
     .data2_i    (Sign_Extend.data_o),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
+);
+
+MUX32_3 MUX6(
+	.data1_i	(IDEX.data1_o),
+	.data2_i	(WBdata),
+	.data3_i	(ALUres),
+	.select_i	(Forwarding.ForwardA_o),
+	.data_o		()
+);
+
+MUX32_3 MUX7(
+	.data1_i	(IDEX.data2_o),
+	.data2_i	(WBdata),
+	.data3_i	(ALUres),
+	.select_i	(Forwarding.ForwardB_o),
+	.data_o		(WRdata)
 );
   
 ALU ALU(
@@ -183,7 +199,7 @@ EXMEM EXMEM(
     .clk_i      (clk_i),
     .pc_i       (Add_branch.data_o),
     .ALUres_i   (ALU.data_o),
-    .wrdata_i   (RTdata),
+    .wrdata_i   (WRdata),
     .pc_o       (),
     .ALUres_o   (ALUres),
     .wrdata_o   (),
@@ -202,12 +218,23 @@ EXMEM EXMEM(
     .WriteBackPath_o ()
 );
 
+Forwarding Forwarding(
+	.EM_RegWrite_i	(EXMEM.RegWrite_o),
+	.EM_RegRD_i		(EXMEM.WriteBackPath_o),
+	.MW_RegWrite_i	(MEMWB.RegWrite_o),
+	.MW_RegRD_i		(MEMWB.WriteBackPath_o),
+	.IE_RegRS_i		(IDEX.MUX0_o),
+	.IE_RegRT_i		(IDEX.MUX1_o),
+	.ForwardA_o		(),
+	.ForwardB_o		()
+);
+
 // MEM stage
 
 Data_Memory Data_Memory(
 	.clk		(clk_i),
 	.addr_i		(ALUres),
-	.w_data_i	(RTdata),
+	.w_data_i	(EXMEM.wrdata_o),
 	.MemRead_i	(Control.MemRead_o),
 	.MemWrite_i	(Control.MemWrite_o),
 	.r_data_o	()
@@ -232,11 +259,11 @@ MEMWB MEMWB(
 
 // WB stage
 
-MUX32 MUX_MemtoReg(
-	.data1_i	(ALUres),
-	.data2_i	(Data_Memory.r_data_o),
-	.select_i	(Control.MemtoReg_o),
-	.data_o		()
+MUX32 MUX5(
+	.data1_i	(MEMWB.mux0_o),
+	.data2_i	(MEMWB.mux1_o),
+	.select_i	(MEMWB.MemtoReg_o),
+	.data_o		(WBdata)
 );
 
 HazardDetection Hazard_Detect(
