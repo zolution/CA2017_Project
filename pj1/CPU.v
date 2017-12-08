@@ -189,16 +189,9 @@ IDEX IDEX(
 
 // EX stage
 
-MUX5 MUX_RegDst(
-    .data1_i    (IDEX_MUX0),
-    .data2_i    (IDEX.MUX1_o),
-    .select_i   (IDEX.RegDst_o),
-    .data_o     ()
-);
-
 MUX32 MUX_ALUSrc(
     .data1_i    (WRdata),
-    .data2_i    (IDEX.extend_o),
+    .data2_i    (extended),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
@@ -231,6 +224,13 @@ ALU_Control ALU_Control(
     .funct_i    (extended[5:0]),
     .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
+);
+
+MUX5 MUX_RegDst(
+    .data1_i    (IDEX_MUX0),
+    .data2_i    (IDEX.MUX1_o),
+    .select_i   (IDEX.RegDst_o),
+    .data_o     ()
 );
 
 Forwarding Forwarding(
