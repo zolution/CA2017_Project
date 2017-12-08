@@ -121,7 +121,6 @@ IDEX IDEX(
     .data1_i    (Registers.RSdata_o),
     .data2_i    (Registers.RTdata_o),
     .extend_i   (Sign_Extend.data_o),
-    .inst_i     (inst),
     .pc_o       (),
     .data1_o    (),
     .data2_o    (),
@@ -149,7 +148,8 @@ IDEX IDEX(
     .MUX0_i     (inst[20:16]),
     .MUX1_i     (inst[15:11]),
     .MUX0_o     (IDEX_MUX0),
-    .MUX1_o     ()
+    .MUX1_o     (),
+
     // Forwarding unit
     .inst0_i     (inst[25:21]),
     .inst1_i     (inst[20:16]),
@@ -198,7 +198,7 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    (IDEX.inst_o[5:0]),
+    .funct_i    (extended[5:0]),
     .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
 );
