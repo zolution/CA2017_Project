@@ -10,7 +10,7 @@ input			clk_i;
 input			rst_i;
 input			start_i;
 
-wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended, WBdata, WRdata;
+wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, extended, funct, WBdata, WRdata;
 
 wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
@@ -125,12 +125,12 @@ Registers Registers(
 
 Sign_Extend Sign_Extend(
     .data_i     (inst[15:0]),
-    .data_o     ()
+    .data_o     (extended)
 );
 
 Adder Add_branch(
     .data1_i    (IDEX.pc_o),
-    .data2_i    ({Sign_Extend.data_o[29:0], 2'b00}),
+    .data2_i    ({extended[29:0], 2'b00}),
     .data_o     ()
 );
 
@@ -150,12 +150,11 @@ IDEX IDEX(
     .pc_i       (),
     .data1_i    (Registers.RSdata_o),
     .data2_i    (Registers.RTdata_o),
-    .extend_i   (Sign_Extend.data_o),
+    .extend_i   (extended),
     .pc_o       (),
     .data1_o    (),
     .data2_o    (),
-    .extend_o   (extended),
-
+    .extend_o   (funct),
     // Control input
     .RegDst_i   (MUX8.RegDst_o),
     .ALUSrc_i   (MUX8.ALUSrc_o),
@@ -174,24 +173,23 @@ IDEX IDEX(
     .ExtOp_o    (),
     .ALUOp_o    (),
     .MemRead_o  (MemRead),
-    // Writeback path
-    .MUX0_i     (inst[20:16]),
-    .MUX1_i     (inst[15:11]),
-    .MUX0_o     (IDEX_MUX0),
-    .MUX1_o     (),
-
     // Forwarding unit
     .inst0_i     (inst[25:21]),
     .inst1_i     (inst[20:16]),
     .inst0_o     (),
-    .inst1_o     ()
+    .inst1_o     (),
+    // Writeback path
+    .MUX0_i     (inst[20:16]),
+    .MUX1_i     (inst[15:11]),
+    .MUX0_o     (IDEX_MUX0),
+    .MUX1_o     ()
 );
 
 // EX stage
 
 MUX32 MUX_ALUSrc(
     .data1_i    (WRdata),
-    .data2_i    (extended),
+    .data2_i    (funct),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
@@ -221,7 +219,7 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    (extended[5:0]),
+    .funct_i    (funct[5:0]),
     .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
 );
