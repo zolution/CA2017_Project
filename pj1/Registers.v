@@ -24,8 +24,8 @@ output  [31:0]      RTdata_o;
 reg     [31:0]      register        [0:31];
 
 // Read Data      
-assign  RSdata_o = register[RSaddr_i];
-assign  RTdata_o = register[RTaddr_i];
+assign RSdata_o = (RegWrite_i && (RSaddr_i==RDaddr_i)) ? RDdata_i : register[RSaddr_i];
+assign RTdata_o = (RegWrite_i && (RTaddr_i==RDaddr_i)) ? RDdata_i : register[RTaddr_i];
 
 // Write Data   
 always@(posedge clk_i) begin
