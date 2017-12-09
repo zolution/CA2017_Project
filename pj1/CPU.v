@@ -37,7 +37,7 @@ Control Control(
 );
 
 MUX8 MUX8(
-    .MUX8_i     (Hazard_Detect.MUX8_o),
+    .MUX8_i     (HazardDetection.MUX8_o),
     .RegDst_i   (Control.RegDst_o), 
     .ALUSrc_i   (Control.ALUSrc_o), 
     .MemtoReg_i (Control.MemtoReg_o), 
@@ -70,7 +70,7 @@ PC PC(
     .start_i    (start_i),
     .pc_i       (Jump_MUX.data_o),
     .pc_o       (inst_addr),
-    .Hazard_i   (Hazard_Detect.PC_Write_o)
+    .Hazard_i   (HazardDetection.PC_Write_o)
 );
 
 Shift_Left Shift_Left(
@@ -106,7 +106,7 @@ IFID IFID(
     .inst_i     (Instruction_Memory.inst_o),
     .pc_o       (),
     .inst_o     (inst),
-    .Hazard_i   (Hazard_Detect.IFID_Write_o),
+    .Hazard_i   (HazardDetection.IFID_Write_o),
     .Flush_i    (IFID_needflush)
 );
 
@@ -134,7 +134,7 @@ Adder Add_branch(
     .data_o     ()
 );
 
-HazardDetection Hazard_Detect(
+HazardDetection HazardDetection(
     .IDEX_MemRead_i     (MemRead),
     .IDEX_RegisterRt_i  (IDEX_MUX0),
     .IFID_RegisterRs_i  (inst[25:21]),
@@ -280,8 +280,8 @@ Data_Memory Data_Memory(
 
 MEMWB MEMWB(
     .clk_i      (clk_i),
-    .mux0_i     (Data_Memory.r_data_o),
-    .mux1_i     (ALUres),
+    .mux0_i     (ALUres),
+    .mux1_i     (Data_Memory.r_data_o),
     .mux0_o     (),
     .mux1_o     (),
     // Control input

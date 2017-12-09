@@ -7,7 +7,7 @@ output	reg		[31:0]	r_data_o = 32'b0;
 
 reg		[31:0]	memory[31:0];
 
-always @(posedge clk) begin
+always @(addr_i or w_data_i or MemRead_i or MemWrite_i) begin
 	if (MemRead_i == 1'b1)	begin
 		r_data_o  <= memory[addr_i];
 	end

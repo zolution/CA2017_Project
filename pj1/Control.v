@@ -10,7 +10,7 @@ assign RegDst_o = (Op_i == 6'd0) ? 1'd1 : 1'd0;
 // ALUSrc: 0:R-type, 1:I-type
 assign ALUSrc_o = (Op_i == 6'd0 || Op_i == 6'b000100) ? 1'd0 : 1'd1;
 
-assign MemtoReg_o = (Op_i == 6'b100011 || Op_i == 6'b001000) ? 1'd1 : 1'd0;
+assign MemtoReg_o = (Op_i == 6'b100011) ? 1'd1 : 1'd0;
 
 assign RegWrite_o = (Op_i == 6'b000000 || Op_i == 6'b100011|| Op_i == 6'b001000) ? 1'd1 : 1'd0;
 
