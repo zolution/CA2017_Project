@@ -12,7 +12,7 @@ input			start_i;
 
 wire	[31:0]	inst_addr, inst, ALUres, RTdata, pc_plus4, pc_next, extended, funct, WBdata, WRdata;
 
-wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o);
+wire            registers_equal = (Registers.RSdata_o == Registers.RTdata_o) ? 1'b1 : 1'b0;
 wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 
 // For Flush
