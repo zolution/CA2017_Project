@@ -3,7 +3,7 @@
 module TestBench;
 
 reg                Clk;
-reg                Start;
+reg                Start, Reset;
 integer            i, outfile, counter;
 integer            stall, flush;
 
@@ -11,7 +11,8 @@ always #(`CYCLE_TIME/2) Clk = ~Clk;
 
 CPU CPU(
     .clk_i  (Clk),
-    .start_i(Start)
+    .start_i(Start),
+	.rst_i	(Reset)
 );
   
 initial begin
@@ -45,12 +46,12 @@ initial begin
     // Set Input n into data memory at 0x00
     CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
     
-    Clk = 1;
-    //Reset = 0;
+    Clk = 0;
+	Reset = 0;
     Start = 0;
     
     #(`CYCLE_TIME/4) 
-    //Reset = 1;
+    Reset = 1;
     Start = 1;
         
     
@@ -61,8 +62,8 @@ always@(posedge Clk) begin
         $stop;
 
     // put in your own signal to count stall and flush
-    // if(CPU.HazzardDetection.mux8_o == 1 && CPU.Control.Jump_o == 0 && CPU.Control.Branch_o == 0)stall = stall + 1;
-    // if(CPU.HazzardDetection.Flush_o == 1)flush = flush + 1;  
+    if(CPU.HazardDetection.MUX8_o == 1 && CPU.Control.Jump_o == 0 && CPU.Control.Branch_o == 0)stall = stall + 1;
+    if(CPU.IFID_needflush == 1)flush = flush + 1;  
 
     // print PC
     $fdisplay(outfile, "cycle = %d, Start = %d, Stall = %d, Flush = %d\nPC = %d", counter, Start, stall, flush, CPU.PC.pc_o);
