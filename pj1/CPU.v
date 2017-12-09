@@ -116,7 +116,7 @@ Registers Registers(
     .clk_i      (clk_i),
     .RSaddr_i   (inst[25:21]),
     .RTaddr_i   (inst[20:16]),
-    .RDaddr_i   (WriteBack_MEM), 
+    .RDaddr_i   (WriteBack_WB), 
     .RDdata_i   (WBdata),
     .RegWrite_i (RegWrite_WB), 
     .RSdata_o   (), 
