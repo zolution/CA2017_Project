@@ -87,8 +87,8 @@ MUX32 Jump_MUX(
 );
 
 MUX32 Branch_MUX(
-    .data1_i    (Add_branch.data_o),
-    .data2_i    (pc_plus4),
+    .data1_i    (pc_plus4),
+    .data2_i    (Add_branch.data_o),
     .select_i   (Branch_MUX_select),
     .data_o     (pc_next)
 );
