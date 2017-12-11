@@ -26,12 +26,12 @@ This part is mainly based on HW4. However, to support all instruction sets menti
   We need to add some units to support the new instructions. Just lots of simple but tiring works. 
 
 ## Difficulties
-1. Unfamiliarity of Git 
+1. **Unfamiliarity of Git**
   We write our project with git. At first, we hope that this can help merging the works done by different teammates. However, because of our unfamiliarity of git, we spent some time on understanding the different commands of git. Also, we have several commits directly on master, rather than split to different branches. This is not a good habit for using git.
   Solution: Learn to git.
-2. Illustration tables are imprecise 
+2. **Illustration tables are imprecise**
   The tables in the slides are not complete (ex. `addi` is not mentioned), so we must find out the insufficiency in the content. This took us a plenty of time as well to come over those traps.
-3. Testbench
+3. **Testbench**
   We first build a single cycle version for initial test and data memory test. However, the testbench is different from the pipelined version provided by TA. As a result, we have no choice but to modify the testbench of HW4 to meet our requirement.
 
 ## Teamwork
@@ -43,29 +43,29 @@ This part is mainly based on HW4. However, to support all instruction sets menti
 
 # Part 2: Basic pipelined CPU
 ## Implemantation
-1. Control signal 
+1. **Control signal** 
   Different from HW4, now we have lots of control signals, and we have to handle them for different types of command. Also, the destinations are also different for each signal. Most of them will go to the ID/EX Interface (via MUX8 for hazard detection), while some of them directly connect to the program counter part( `branch` and `jump` ). As a result, we need to map each command to a corresponding control signal combination, and send them to the specified component.
-2. 4 Pipelined interfaces
-  The 4 interfaces are mainly array of registers. They stored the input data temporary and forward them out at the next `clk posedge`. Data that are forwarded are listed below:
-  1. IFID interface
-    - PC
-    - instruction
-  2. IDEX interface
-    - PC
-    - `RD_data` and `RS_data` read from the register file
-    - Control signals: `RegDst`, `ALUSrc`, `MemtoReg`, `RegWrite`, `MemWrite`, `ExtOp`, `ALUOp`, `MemRead`
-    - the sign extended data
-    - `write_register`
-  3. EXMEM interface
-    - PC
-    - ALU result
-    - write data for data memory
-    - Control signals:  `MemtoReg`, `RegWrite`, `MemWrite`, `MemRead`
-    - `write_register`
-  4. MEMWB interface
-    - ALU result
-    - data read from data memory
-    - Control signals:  `MemtoReg`, `RegWrite`
+2. **4 Pipelined interfaces**
+	The 4 interfaces are mainly array of registers. They stored the input data temporary and forward them out at the next `clk posedge`. Data that are forwarded are listed below:
+	1. IFID interface
+		- PC
+		- instruction
+	2. IDEX interface
+		- PC
+		- `RD_data` and `RS_data` read from the register file
+		- Control signals: `RegDst`, `ALUSrc`, `MemtoReg`, `RegWrite`, `MemWrite`, `ExtOp`, `ALUOp`, `MemRead`
+		- the sign extended data
+		- `write_register`
+	3. EXMEM interface
+		- PC
+		- ALU result
+		- write data for data memory
+		- Control signals:  `MemtoReg`, `RegWrite`, `MemWrite`, `MemRead`
+		- `write_register`
+	4. MEMWB interface
+		- ALU result
+		- data read from data memory
+		- Control signals:  `MemtoReg`, `RegWrite`
 3. writeback path
   In a pipelined CPU, register file have to wait `write_data`  for 4 cycles. So we forwarded the `write_register` to each interface so that it can arrive the register file with `write_data` simultaneously.
 
