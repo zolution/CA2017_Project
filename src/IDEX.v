@@ -27,7 +27,7 @@ output reg	[4:0]	MUX0_o=5'b0, MUX1_o=5'b0;
 input		[4:0]	inst0_i, inst1_i;
 output reg	[4:0]	inst0_o=5'b0, inst1_o=5'b0;
 
-always@(posedge clk_i & stall_i) begin
+always@(posedge clk_i && ~stall_i) begin
 	pc_o <= pc_i;
 	data1_o <= data1_i;
 	data2_o <= data2_i;
