@@ -6,7 +6,8 @@ module EXMEM
 	pc_o, ALUres_o, wrdata_o,
 	MemRead_i, MemWrite_i, RegWrite_i, MemtoReg_i,
 	MemRead_o, MemWrite_o, RegWrite_o, MemtoReg_o,
-	WriteBackPath_i, WriteBackPath_o
+	WriteBackPath_i, WriteBackPath_o,
+	stall_i
 );
 
 input					clk_i;
@@ -21,7 +22,7 @@ output	reg		MemRead_o = 1'b0, MemWrite_o = 1'b0, RegWrite_o = 1'b0, MemtoReg_o =
 input		[4:0]	WriteBackPath_i;
 output 	reg	[4:0]	WriteBackPath_o = 5'b0;
 
-always@(posedge clk_i) begin
+always@(posedge clk_i && ~stall_i) begin
 	pc_o <= pc_i;
 	ALUres_o <= ALUres_i;
 	wrdata_o <= wrdata_i;
