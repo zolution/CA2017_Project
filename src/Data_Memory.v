@@ -39,7 +39,7 @@ assign	addr = addr_i>>5;
 assign	data_o = data;
 
 //Controller 
-always@(posedge clk_i) begin
+always@(posedge clk_i or negedge rst_i) begin
 	if(~rst_i) begin
 		state <= STATE_IDLE;
 	end
@@ -68,7 +68,7 @@ always@(posedge clk_i) begin
 	end
 end
 
-always@(posedge clk_i) begin
+always@(posedge clk_i or negedge rst_i) begin
 	if(~rst_i) begin
 		count <= 4'd0;
 	end
@@ -89,7 +89,7 @@ end
 
 assign ack = (state == STATE_WAIT) && (count == 4'd9);
 
-always@(posedge clk_i) begin
+always@(posedge clk_i or negedge rst_i) begin
 	if(~rst_i) begin
 		write_reg <= 0;
 	end

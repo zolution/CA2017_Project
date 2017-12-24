@@ -120,7 +120,7 @@ integer bit_start;
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
 	// p1_data(32) p1_offset(5) r_hit_data(256)
-	bit_start = 32*(p1_offset-1);
+	bit_start = 32*(p1_offset);
 	p1_data <= r_hit_data[bit_start +: 32];
 end
 
@@ -128,7 +128,7 @@ end
 always@(p1_offset or r_hit_data or p1_data_i) begin
 	//!!! add you code here! (w_hit_data=...?)
 	// p1_data_i(32) p1_offset(5) w_hit_data(256)
-	bit_start = 32*(p1_offset-1);
+	bit_start = 32*(p1_offset);
 	w_hit_data[bit_start +: 32] <= p1_data_i;
 end
 
