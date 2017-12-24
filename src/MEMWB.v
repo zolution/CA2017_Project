@@ -14,7 +14,7 @@ input		[31:0]	mux0_i, mux1_i;
 output	reg	[31:0]	mux0_o = 32'b0, mux1_o = 32'b0;
 
 // Control signal
-input			RegWrite_i, MemtoReg_i;
+input			RegWrite_i, MemtoReg_i, stall_i;
 output	reg		RegWrite_o = 1'b0, MemtoReg_o = 1'b0;
 
 // Write path

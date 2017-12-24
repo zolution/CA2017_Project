@@ -6,7 +6,7 @@ module IFID
 	Hazard_i, Flush_i,
 );
 
-input				clk_i, Hazard_i, Flush_i;
+input				clk_i, Hazard_i, Flush_i, stall_i;
 input		[31:0]	inst_i, pc_i;
 output reg	[31:0]	inst_o=32'b0, pc_o=32'b0;
 

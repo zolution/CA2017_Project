@@ -15,7 +15,7 @@ input			[31:0]	pc_i, ALUres_i, wrdata_i;
 output	reg		[31:0]	pc_o = 32'd0, ALUres_o = 32'd0, wrdata_o = 32'd0;
 
 // Control Signal
-input			MemRead_i, MemWrite_i, RegWrite_i, MemtoReg_i;
+input			MemRead_i, MemWrite_i, RegWrite_i, MemtoReg_i, stall_i;
 output	reg		MemRead_o = 1'b0, MemWrite_o = 1'b0, RegWrite_o = 1'b0, MemtoReg_o = 1'b0;
 
 // Write path

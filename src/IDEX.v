@@ -14,7 +14,7 @@ input		[31:0]	pc_i, data1_i, data2_i, extend_i;
 output reg	[31:0]	pc_o=32'b0, data1_o=32'b0, data2_o=32'b0, extend_o=32'b0;
 
 // Control signal
-input				RegDst_i, ALUSrc_i, MemtoReg_i, RegWrite_i, MemWrite_i, ExtOp_i, MemRead_i;
+input				RegDst_i, ALUSrc_i, MemtoReg_i, RegWrite_i, MemWrite_i, ExtOp_i, MemRead_i, stall_i;
 output reg			RegDst_o=0, ALUSrc_o=0, MemtoReg_o=0, RegWrite_o=0, MemWrite_o=0, ExtOp_o=0, MemRead_o=0;
 input		[1:0]	ALUOp_i;
 output reg	[1:0]	ALUOp_o=2'b0;
