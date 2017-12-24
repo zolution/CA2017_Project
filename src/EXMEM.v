@@ -22,17 +22,19 @@ output	reg		MemRead_o = 1'b0, MemWrite_o = 1'b0, RegWrite_o = 1'b0, MemtoReg_o =
 input		[4:0]	WriteBackPath_i;
 output 	reg	[4:0]	WriteBackPath_o = 5'b0;
 
-always@(posedge clk_i && ~stall_i) begin
-	pc_o <= pc_i;
-	ALUres_o <= ALUres_i;
-	wrdata_o <= wrdata_i;
-	// Control signal
-	MemRead_o <= MemRead_i;
-	MemWrite_o <= MemWrite_i;
-	RegWrite_o <= RegWrite_i;
-	MemtoReg_o <= MemtoReg_i;
-	// Writeback path
-	WriteBackPath_o <= WriteBackPath_i;
+always@(posedge clk_i) begin
+	if(~stall_i) begin
+		pc_o <= pc_i;
+		ALUres_o <= ALUres_i;
+		wrdata_o <= wrdata_i;
+		// Control signal
+		MemRead_o <= MemRead_i;
+		MemWrite_o <= MemWrite_i;
+		RegWrite_o <= RegWrite_i;
+		MemtoReg_o <= MemtoReg_i;
+		// Writeback path
+		WriteBackPath_o <= WriteBackPath_i;
+	end
 end
 
 endmodule

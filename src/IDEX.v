@@ -27,26 +27,28 @@ output reg	[4:0]	MUX0_o=5'b0, MUX1_o=5'b0;
 input		[4:0]	inst0_i, inst1_i;
 output reg	[4:0]	inst0_o=5'b0, inst1_o=5'b0;
 
-always@(posedge clk_i && ~stall_i) begin
-	pc_o <= pc_i;
-	data1_o <= data1_i;
-	data2_o <= data2_i;
-	extend_o <= extend_i;
-	// Control signal
-	RegDst_o <= RegDst_i;
-	ALUSrc_o <= ALUSrc_i;
-	MemtoReg_o <= MemtoReg_i;
-	RegWrite_o <= RegWrite_i;
-	MemWrite_o <= MemWrite_i;
-	ExtOp_o <= ExtOp_i;
-	ALUOp_o <= ALUOp_i;
-	MemRead_o <= MemRead_i;
-	// Writeback path
-	MUX0_o <= MUX0_i;
-	MUX1_o <= MUX1_i;
-	// Forwarding
-	inst0_o <= inst0_i;
-	inst1_o <= inst1_i;
+always@(posedge clk_i) begin
+	if(~stall_i) begin
+		pc_o <= pc_i;
+		data1_o <= data1_i;
+		data2_o <= data2_i;
+		extend_o <= extend_i;
+		// Control signal
+		RegDst_o <= RegDst_i;
+		ALUSrc_o <= ALUSrc_i;
+		MemtoReg_o <= MemtoReg_i;
+		RegWrite_o <= RegWrite_i;
+		MemWrite_o <= MemWrite_i;
+		ExtOp_o <= ExtOp_i;
+		ALUOp_o <= ALUOp_i;
+		MemRead_o <= MemRead_i;
+		// Writeback path
+		MUX0_o <= MUX0_i;
+		MUX1_o <= MUX1_i;
+		// Forwarding
+		inst0_o <= inst0_i;
+		inst1_o <= inst1_i;
+	end
 end
 
 endmodule
