@@ -5,7 +5,8 @@ module MEMWB
 	mux0_o, mux1_o,
 	RegWrite_i, MemtoReg_i,
 	RegWrite_o, MemtoReg_o,
-	WriteBackPath_i, WriteBackPath_o
+	WriteBackPath_i, WriteBackPath_o,
+	stall_i
 );
 
 input				clk_i;
@@ -20,7 +21,7 @@ output	reg		RegWrite_o = 1'b0, MemtoReg_o = 1'b0;
 input		[4:0]	WriteBackPath_i;
 output 	reg	[4:0]	WriteBackPath_o = 5'b0;
 
-always@(posedge clk_i) begin
+always@(posedge clk_i && ~stall_i) begin
 	mux0_o <= mux0_i;
 	mux1_o <= mux1_i;
 	// Control signal
