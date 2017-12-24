@@ -1,6 +1,6 @@
 **/.DS_Store
 
-pj1/a.out
-pj1/*.vcd
-pj1/output.txt
-
+src/a.out
+src/*.vcd
+src/output.txt
+src/cache.txt
