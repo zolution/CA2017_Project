@@ -111,17 +111,22 @@ assign	cache_dirty  = write_hit;
 
 // tag comparator
 //!!! add you code here!  (hit=...?,  r_hit_data=...?)
+assign hit = sram_valid & (p1_tag == sram_tag) & p1_req;
+assign r_hit_data = sram_cache_data;
+
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
+	// p1_data(32) p1_offset(5) r_hit_data(256)
+	p1_data = r_hit_data[(32*p1_offset):32*(p1_offset-1)];
 end
-
 
 // write data :  32-bit to 256-bit
 always@(p1_offset or r_hit_data or p1_data_i) begin
 	//!!! add you code here! (w_hit_data=...?)
+	// p1_data_i(32) p1_offset(5) w_hit_data(256)
+	w_hit_data[(32*p1_offset):32*(p1_offset-1)] = p1_data_i;
 end
-
 
 // controller
 always@(posedge clk_i or negedge rst_i) begin
