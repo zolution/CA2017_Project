@@ -92,7 +92,7 @@ PC PC
 	.stall_i(dcache.p1_stall_o),
 	.pcEnable_i(HazardDetection.PC_Write_o),
 	.pc_i(Jump_MUX.data_o),
-	.pc_o()
+	.pc_o(inst_addr)
 );
 
 /* Origin Code
