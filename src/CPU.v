@@ -130,7 +130,7 @@ MUX32 Branch_MUX(
 
 Instruction_Memory Instruction_Memory(
 	.addr_i(), 
-	.instr_o()
+	.inst_o()
 );
 
 /*Origin Code
