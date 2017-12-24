@@ -1,57 +1,48 @@
-
 module dcache_top
 (
-    // System clock, reset and stall
-	clk_i, 
+	// System clock, reset and stall
+	clk_i,
 	rst_i,
-	
+
 	// to Data Memory interface
-	mem_data_i, 
+	mem_data_i,
 	mem_ack_i,
-	mem_data_o, 
+	mem_data_o,
 	mem_addr_o,
-	mem_enable_o, 
-	mem_write_o, 
-	
+	mem_enable_o,
+	mem_write_o,
+
 	// to CPU interface
-	p1_data_i, 
+	p1_data_i,
 	p1_addr_i,
-	p1_MemRead_i, 
-	p1_MemWrite_i, 
-	p1_data_o, 
+	p1_MemRead_i,
+	p1_MemWrite_i,
+	p1_data_o,
 	p1_stall_o
 );
-//
+
 // System clock, start
-//
-input				clk_i; 
+input				clk_i;
 input				rst_i;
 
-//
-// to Data Memory interface		
-//
-input	[256-1:0]	  mem_data_i; 
-input				      mem_ack_i; 
-	
-output	[256-1:0]	mem_data_o; 
+// to Data Memory interface
+input	[256-1:0]	mem_data_i;
+input				mem_ack_i;
+output	[256-1:0]	mem_data_o;
 output	[32-1:0]	mem_addr_o;
-output				mem_enable_o; 
-output				mem_write_o; 
-	
-//	
+output				mem_enable_o;
+output				mem_write_o;
+
 // to core interface
-//	
-input	[32-1:0]	p1_data_i; 
+input	[32-1:0]	p1_data_i;
 input	[32-1:0]	p1_addr_i;
 input				p1_MemRead_i;
 input				p1_MemWrite_i;
 
-output	[32-1:0]p1_data_o; 
-output				p1_stall_o; 
+output	[32-1:0]	p1_data_o;
+output				p1_stall_o;
 
-//
 // to SRAM interface
-//
 wire	[4:0]		cache_sram_index;
 wire				cache_sram_enable;
 wire	[23:0]		cache_sram_tag;
@@ -70,7 +61,7 @@ parameter 			STATE_IDLE			= 3'h0,
 					STATE_READMISS		= 3'h1,
 					STATE_READMISSOK	= 3'h2,
 					STATE_WRITEBACK		= 3'h3,
-					STATE_MISS			  = 3'h4;
+					STATE_MISS			= 3'h4;
 reg		[2:0]		state;
 reg					mem_enable;
 reg					mem_write;
@@ -90,6 +81,7 @@ wire				write_hit;
 wire				p1_req;
 reg		[31:0]		p1_data;
 
+
 // project1 interface
 assign 	p1_req		= p1_MemRead_i | p1_MemWrite_i;
 assign	p1_offset	= p1_addr_i[4:0];
@@ -105,7 +97,7 @@ assign	sram_tag   = sram_cache_tag[21:0];
 assign	cache_sram_index  = p1_index;
 assign	cache_sram_enable = p1_req;
 assign	cache_sram_write  = cache_we | write_hit;
-assign	cache_sram_tag    = {1'b1, cache_dirty, p1_tag};	
+assign	cache_sram_tag    = {1'b1, cache_dirty, p1_tag};
 assign	cache_sram_data   = (hit) ? w_hit_data : mem_data_i;
 
 // memory interface
@@ -119,7 +111,6 @@ assign	cache_dirty  = write_hit;
 
 // tag comparator
 //!!! add you code here!  (hit=...?,  r_hit_data=...?)
-	
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
@@ -132,17 +123,17 @@ always@(p1_offset or r_hit_data or p1_data_i) begin
 end
 
 
-// controller 
+// controller
 always@(posedge clk_i or negedge rst_i) begin
 	if(~rst_i) begin
 		state      <= STATE_IDLE;
 		mem_enable <= 1'b0;
 		mem_write  <= 1'b0;
-		cache_we   <= 1'b0; 
+		cache_we   <= 1'b0;
 		write_back <= 1'b0;
 	end
 	else begin
-		case(state)		
+		case(state)
 			STATE_IDLE: begin
 				if(p1_req && !hit) begin	//wait for request
 					state <= STATE_MISS;
@@ -153,17 +144,17 @@ always@(posedge clk_i or negedge rst_i) begin
 			end
 			STATE_MISS: begin
 				if(sram_dirty) begin		//write back if dirty
-	                //!!! add you code here! 
+	                //!!! add you code here!
 					state <= STATE_WRITEBACK;
 				end
 				else begin					//write allocate: write miss = read miss + write hit; read miss = read miss + read hit
-	                //!!! add you code here! 
+	                //!!! add you code here!
 					state <= STATE_READMISS;
 				end
 			end
 			STATE_READMISS: begin
 				if(mem_ack_i) begin			//wait for data memory acknowledge
-	                //!!! add you code here! 
+	                //!!! add you code here!
 					state <= STATE_READMISSOK;
 				end
 				else begin
@@ -171,12 +162,12 @@ always@(posedge clk_i or negedge rst_i) begin
 				end
 			end
 			STATE_READMISSOK: begin			//wait for data memory acknowledge
-	                //!!! add you code here! 
+	                //!!! add you code here!
 				state <= STATE_IDLE;
 			end
 			STATE_WRITEBACK: begin
 				if(mem_ack_i) begin			//wait for data memory acknowledge
-	                //!!! add you code here! 
+	                //!!! add you code here!
 					state <= STATE_READMISS;
 				end
 				else begin
@@ -187,9 +178,7 @@ always@(posedge clk_i or negedge rst_i) begin
 	end
 end
 
-//
 // Tag SRAM 0
-//
 dcache_tag_sram dcache_tag_sram
 (
 	.clk_i(clk_i),
@@ -200,9 +189,7 @@ dcache_tag_sram dcache_tag_sram
 	.data_o(sram_cache_tag)
 );
 
-//
 // Data SRAM 0
-//
 dcache_data_sram dcache_data_sram
 (
 	.clk_i(clk_i),
