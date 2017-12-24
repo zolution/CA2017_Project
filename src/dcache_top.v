@@ -112,7 +112,7 @@ assign	cache_dirty  = write_hit;
 // tag comparator
 //!!! add you code here!  (hit=...?,  r_hit_data=...?)
 assign hit = sram_valid & (p1_tag == sram_tag) & p1_req;
-assign r_hit_data = sram_cache_data;
+assign r_hit_data = (hit) ? sram_cache_data : mem_data_i;
 
 integer bit_start;
 
@@ -120,7 +120,7 @@ integer bit_start;
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
 	// p1_data(32) p1_offset(5) r_hit_data(256)
-	bit_start = 32*(p1_offset);
+	bit_start = 8*(p1_offset);
 	p1_data <= r_hit_data[bit_start +: 32];
 end
 
@@ -128,7 +128,7 @@ end
 always@(p1_offset or r_hit_data or p1_data_i) begin
 	//!!! add you code here! (w_hit_data=...?)
 	// p1_data_i(32) p1_offset(5) w_hit_data(256)
-	bit_start = 32*(p1_offset);
+	bit_start = 8*(p1_offset);
 	w_hit_data[bit_start +: 32] <= p1_data_i;
 end
 
@@ -165,7 +165,6 @@ always@(posedge clk_i or negedge rst_i) begin
 	                mem_enable <= 1'b1;
 	                mem_write <= 1'b0;
 	                write_back <= 1'b0;
-
 					state <= STATE_READMISS;
 				end
 			end
