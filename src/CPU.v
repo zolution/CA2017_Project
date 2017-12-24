@@ -37,6 +37,7 @@ wire            Branch_MUX_select = Control.Branch_o & registers_equal;
 
 // For Flush
 wire            IFID_needflush = Control.Jump_o | Branch_MUX_select;
+wire			stall;
 
 // Hazard & Forwarding
 wire            MemRead, RegWrite_WB, RegWrite_MEM;
@@ -89,7 +90,7 @@ PC PC
 	.clk_i(clk_i),
 	.rst_i(rst_i),
 	.start_i(start_i),
-	.stall_i(dcache.p1_stall_o),
+	.stall_i(stall),
 	.pcEnable_i(~HazardDetection.PC_Write_o),
 	.pc_i(Jump_MUX.data_o),
 	.pc_o(inst_addr)
@@ -147,6 +148,7 @@ IFID IFID(
     .pc_o       (),
     .inst_o     (inst),
     .Hazard_i   (HazardDetection.IFID_Write_o),
+	.stall_i(stall),
     .Flush_i    (IFID_needflush)
 );
 
@@ -220,6 +222,7 @@ IDEX IDEX(
     .MUX0_i     (inst[20:16]),
     .MUX1_i     (inst[15:11]),
     .MUX0_o     (IDEX_MUX0),
+	.stall_i(stall),
     .MUX1_o     ()
 );
 
@@ -291,6 +294,7 @@ EXMEM EXMEM(
     .pc_o       (),
     .ALUres_o   (ALUres),
     .wrdata_o   (),
+	.stall_i(stall),
     // Control input
     .MemRead_i  (MemRead),
     .MemWrite_i (IDEX.MemWrite_o),
@@ -325,6 +329,7 @@ MEMWB MEMWB(
     .mux1_i     (dcache.p1_data_o),
     .mux0_o     (),
     .mux1_o     (),
+	.stall_i(stall),
     // Control input
     .RegWrite_i (RegWrite_MEM),
     .MemtoReg_i (EXMEM.MemtoReg_o),
@@ -366,7 +371,7 @@ dcache_top dcache
 	.p1_MemRead_i(EXMEM.MemRead_o),
 	.p1_MemWrite_i(EXMEM.MemWrite_o),
 	.p1_data_o(),
-	.p1_stall_o()
+	.p1_stall_o(stall)
 );
 
 endmodule
