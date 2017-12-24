@@ -89,9 +89,9 @@ PC PC
 	.clk_i(clk_i),
 	.rst_i(rst_i),
 	.start_i(start_i),
-	.stall_i(),
-	.pcEnable_i(),
-	.pc_i(),
+	.stall_i(dcache.p1_stall_o),
+	.pcEnable_i(HazardDetection.PC_Write_o),
+	.pc_i(Jump_MUX.data_o),
 	.pc_o()
 );
 
@@ -129,7 +129,7 @@ MUX32 Branch_MUX(
 // IF stage
 
 Instruction_Memory Instruction_Memory(
-	.addr_i(), 
+	.addr_i(inst_addr), 
 	.inst_o()
 );
 
@@ -353,12 +353,12 @@ dcache_top dcache
 	.rst_i(rst_i),
 	
 	// to Data Memory interface		
-	.mem_data_i(mem_data_i), 
-	.mem_ack_i(mem_ack_i), 	
-	.mem_data_o(mem_data_o), 
-	.mem_addr_o(mem_addr_o), 	
-	.mem_enable_o(mem_enable_o), 
-	.mem_write_o(mem_write_o), 
+	.mem_data_i(mem_data_i),
+	.mem_ack_i(mem_ack_i),
+	.mem_data_o(mem_data_o),
+	.mem_addr_o(mem_addr_o),
+	.mem_enable_o(mem_enable_o),
+	.mem_write_o(mem_write_o),
 	
 	// to CPU interface	
 	.p1_data_i(), 
