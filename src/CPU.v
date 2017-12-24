@@ -151,19 +151,6 @@ IFID IFID(
 );
 
 // ID stage
-
-Registers Registers(
-	.clk_i(clk_i),
-	.RSaddr_i(),
-	.RTaddr_i(),
-	.RDaddr_i(), 
-	.RDdata_i(),
-	.RegWrite_i(), 
-	.RSdata_o(), 
-	.RTdata_o() 
-);
-
-/*Origin Code
 Registers Registers(
     .clk_i      (clk_i),
     .RSaddr_i   (inst[25:21]),
@@ -174,7 +161,6 @@ Registers Registers(
     .RSdata_o   (), 
     .RTdata_o   () 
 );
-*/
 
 Sign_Extend Sign_Extend(
     .data_i     (inst[15:0]),
