@@ -322,7 +322,7 @@ Data_Memory Data_Memory(
 MEMWB MEMWB(
     .clk_i      (clk_i),
     .mux0_i     (ALUres),
-    .mux1_i     (Data_Memory.r_data_o),
+    .mux1_i     (dcache.p1_data_o),
     .mux0_o     (),
     .mux1_o     (),
     // Control input
