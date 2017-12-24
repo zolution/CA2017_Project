@@ -128,8 +128,11 @@ end
 always@(p1_offset or r_hit_data or p1_data_i) begin
 	//!!! add you code here! (w_hit_data=...?)
 	// p1_data_i(32) p1_offset(5) w_hit_data(256)
-	bit_start = 8*(p1_offset);
-	w_hit_data[bit_start +: 32] <= p1_data_i;
+	if (p1_req) begin
+		bit_start = 8*(p1_offset);
+		w_hit_data <= r_hit_data;
+		w_hit_data[bit_start +: 32] <= p1_data_i;
+	end
 end
 
 // controller
