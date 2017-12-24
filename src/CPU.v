@@ -361,10 +361,10 @@ dcache_top dcache
 	.mem_write_o(mem_write_o),
 
 	// to CPU interface
-	.p1_data_i(),
-	.p1_addr_i(),
-	.p1_MemRead_i(),
-	.p1_MemWrite_i(),
+	.p1_data_i(EXMEM.wrdata_o),
+	.p1_addr_i(ALUres),
+	.p1_MemRead_i(EXMEM.MemRead_o),
+	.p1_MemWrite_i(EXMEM.MemWrite_o),
 	.p1_data_o(),
 	.p1_stall_o()
 );
