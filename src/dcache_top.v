@@ -173,6 +173,9 @@ always@(posedge clk_i or negedge rst_i) begin
 			STATE_WRITEBACK: begin
 				if(mem_ack_i) begin			//wait for data memory acknowledge
 	                //!!! add you code here!
+					mem_enable <= 1'b1;
+					write_back <= 1'b0;
+					mem_write  <= 1'b0;
 					state <= STATE_READMISS;
 				end
 				else begin
