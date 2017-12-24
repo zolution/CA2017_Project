@@ -3,12 +3,12 @@ module CPU
 	clk_i,
 	rst_i,
 	start_i,
-   
-	mem_data_i, 
-	mem_ack_i, 	
-	mem_data_o, 
-	mem_addr_o, 	
-	mem_enable_o, 
+ 
+	mem_data_i,
+	mem_ack_i,
+	mem_data_o,
+	mem_addr_o,
+	mem_enable_o,
 	mem_write_o
 );
 
@@ -18,14 +18,14 @@ input rst_i;
 input start_i;
 
 //
-// to Data Memory interface		
+// to Data Memory interface
 //
-input	[256-1:0]	mem_data_i; 
-input				mem_ack_i; 	
-output	[256-1:0]	mem_data_o; 
-output	[32-1:0]	mem_addr_o; 	
-output				mem_enable_o; 
-output				mem_write_o; 
+input	[256-1:0]	mem_data_i;
+input				mem_ack_i;
+output	[256-1:0]	mem_data_o;
+output	[32-1:0]	mem_addr_o;
+output				mem_enable_o;
+output				mem_write_o;
 
 //
 // add your project1 here!
@@ -58,21 +58,21 @@ Control Control(
 
 MUX8 MUX8(
     .MUX8_i     (HazardDetection.MUX8_o),
-    .RegDst_i   (Control.RegDst_o), 
-    .ALUSrc_i   (Control.ALUSrc_o), 
-    .MemtoReg_i (Control.MemtoReg_o), 
-    .RegWrite_i (Control.RegWrite_o), 
-    .MemWrite_i (Control.MemWrite_o), 
-    .ExtOp_i    (Control.ExtOp_o), 
-    .ALUOp_i    (Control.ALUOp_o), 
+    .RegDst_i   (Control.RegDst_o),
+    .ALUSrc_i   (Control.ALUSrc_o),
+    .MemtoReg_i (Control.MemtoReg_o),
+    .RegWrite_i (Control.RegWrite_o),
+    .MemWrite_i (Control.MemWrite_o),
+    .ExtOp_i    (Control.ExtOp_o),
+    .ALUOp_i    (Control.ALUOp_o),
     .MemRead_i  (Control.MemRead_o),
-    .RegDst_o   (), 
-    .ALUSrc_o   (), 
-    .MemtoReg_o (), 
-    .RegWrite_o (), 
-    .MemWrite_o (), 
-    .ExtOp_o    (), 
-    .ALUOp_o    (), 
+    .RegDst_o   (),
+    .ALUSrc_o   (),
+    .MemtoReg_o (),
+    .RegWrite_o (),
+    .MemWrite_o (),
+    .ExtOp_o    (),
+    .ALUOp_o    (),
     .MemRead_o  ()
 );
 
@@ -129,13 +129,13 @@ MUX32 Branch_MUX(
 // IF stage
 
 Instruction_Memory Instruction_Memory(
-	.addr_i(inst_addr), 
+	.addr_i(inst_addr),
 	.inst_o()
 );
 
 /*Origin Code
 Instruction_Memory Instruction_Memory(
-    .addr_i     (inst_addr), 
+    .addr_i     (inst_addr),
     .inst_o     ()
 );
 */
@@ -155,11 +155,11 @@ Registers Registers(
     .clk_i      (clk_i),
     .RSaddr_i   (inst[25:21]),
     .RTaddr_i   (inst[20:16]),
-    .RDaddr_i   (WriteBack_WB), 
+    .RDaddr_i   (WriteBack_WB),
     .RDdata_i   (WBdata),
-    .RegWrite_i (RegWrite_WB), 
-    .RSdata_o   (), 
-    .RTdata_o   () 
+    .RegWrite_i (RegWrite_WB),
+    .RSdata_o   (),
+    .RTdata_o   ()
 );
 
 Sign_Extend Sign_Extend(
@@ -247,7 +247,7 @@ MUX32_3 MUX7(
 	.select_i	(Forwarding.ForwardB_o),
 	.data_o		(WRdata)
 );
-  
+
 ALU ALU(
 	.data1_i    (MUX6.data_o),
     .data2_i    (MUX_ALUSrc.data_o),
@@ -349,23 +349,23 @@ MUX32 MUX5(
 dcache_top dcache
 (
     // System clock, reset and stall
-	.clk_i(clk_i), 
+	.clk_i(clk_i),
 	.rst_i(rst_i),
-	
-	// to Data Memory interface		
+
+	// to Data Memory interface	
 	.mem_data_i(mem_data_i),
 	.mem_ack_i(mem_ack_i),
 	.mem_data_o(mem_data_o),
 	.mem_addr_o(mem_addr_o),
 	.mem_enable_o(mem_enable_o),
 	.mem_write_o(mem_write_o),
-	
-	// to CPU interface	
-	.p1_data_i(), 
-	.p1_addr_i(), 	
-	.p1_MemRead_i(), 
-	.p1_MemWrite_i(), 
-	.p1_data_o(), 
+
+	// to CPU interface
+	.p1_data_i(),
+	.p1_addr_i(),
+	.p1_MemRead_i(),
+	.p1_MemWrite_i(),
+	.p1_data_o(),
 	.p1_stall_o()
 );
 
