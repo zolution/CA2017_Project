@@ -322,6 +322,7 @@ EXMEM EXMEM(
 
 // MEM stage
 
+/*
 Data_Memory Data_Memory(
 	.clk		(clk_i),
 	.addr_i		(ALUres),
@@ -330,6 +331,7 @@ Data_Memory Data_Memory(
 	.MemWrite_i	(EXMEM.MemWrite_o),
 	.r_data_o	()
 );
+*/
 
 MEMWB MEMWB(
     .clk_i      (clk_i),
