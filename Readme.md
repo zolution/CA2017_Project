@@ -1,13 +1,14 @@
 # Computer Architecture Projects
 
-<div>NTU CSIE
-Computer Architecture, Fall 2017
+<div>NTU CSIE<br>
+Computer Architecture, Fall 2017<br>
 CSIE3340, Class 01
 </div>
 
 ## Project List
 
 - Project 1: Building Pipeline Processor
+- Project 2: Pipeline + L1 Data Cache
 
 ## Team Member
 
